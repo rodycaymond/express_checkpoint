@@ -1,10 +1,23 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 const app = express();
 const PORT = process.env.PORT || 3000;
 const knex = require('knex')(require('./knexfile.js')[process.env.NODE_ENV]);
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
+
+app.get('/setCookie', function(req,res){
+    let firstName = req.query.firstName;
+    let lastName = req.query.lastName;
+    res.cookie(`name=${firstName}_${lastName}`);
+    res.json('cookie saved')
+})
+
+app.get('/readCookie', function(req,res){
+    res.json(req.cookies)
+})
 
 app.get('/movies', function(req, res) {
     if(req.query.title){
